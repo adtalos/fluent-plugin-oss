@@ -405,10 +405,17 @@ module Fluent
         end
       end
 
+      class GzipFromBufferCompressor < GzipCompressor
+        def compress(chunk, file)
+          chunk.write_to(file)
+        end
+      end
+
       COMPRESSOR_REGISTRY = Fluent::Registry.new(:oss_compressor_type,
                                                  'fluent/plugin/oss_compressor_')
       {
         'gzip' => GzipCompressor,
+        'gzip_from' => GzipFromBufferCompressor,
         'json' => JsonCompressor,
         'text' => TextCompressor
       }.each do |name, compressor|
